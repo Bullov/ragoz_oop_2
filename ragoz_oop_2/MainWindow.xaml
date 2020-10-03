@@ -1,0 +1,196 @@
+﻿<Window x:Class="ragoz_oop_2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:octahedronWheel="clr-namespace:ragoz_oop_2.Components.OctahedronWheel"
+        xmlns:circleWheel="clr-namespace:ragoz_oop_2.Components.CircleWheel"
+        xmlns:squareWheel="clr-namespace:ragoz_oop_2.Components.SquareWheel"
+        xmlns:viewModels="clr-namespace:ragoz_oop_2.ViewModels"
+        xmlns:wheels="clr-namespace:ragoz_oop_2.ViewModels.Wheels"
+        xmlns:converters="clr-namespace:ragoz_oop_2.Converters"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="MainWindow" MinHeight="600" MinWidth="800">
+    <Window.DataContext>
+        <viewModels:MainViewModel/>
+    </Window.DataContext>
+    <materialDesign:DialogHost Identifier="rootDialog">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="20 0 0 0">
+                    <TextBlock 
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                        Text="Колеса"
+                        Padding="10"/>
+                    <Button 
+                        Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                        Content="{materialDesign:PackIcon Plus}"
+                        Command="{Binding AddWheel}"
+                        Height="32"
+                        Width="32"
+                        Padding="5"/>
+                </StackPanel>
+
+                <ListView 
+                    ItemsSource="{Binding Wheels}" 
+                    materialDesign:ScrollBarAssist.ButtonsVisibility="Visible"
+                    MaxHeight="300"
+                    MinWidth="800">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn
+                                DisplayMemberBinding="{Binding Id}"
+                                Header="Id"/>
+                            <GridViewColumn
+                                DisplayMemberBinding="{Binding Radius}"
+                                Header="Радиус"/>
+                            <GridViewColumn
+                                DisplayMemberBinding="{Binding SpokeNum}"
+                                Header="Кол-во спиц"/>
+                            <GridViewColumn
+                                DisplayMemberBinding="{Binding Angle}"
+                                Header="Угол поворота"/>
+                            <GridViewColumn Header="Отрисовка элемента">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="wheels:WheelVM">
+                                        <CheckBox
+                                            IsChecked="{Binding IsPrintable}"
+                                            Style="{StaticResource MaterialDesignDarkCheckBox}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Grid Width="110">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button
+                                                Margin="0 0 5 0"
+                                                Content="{materialDesign:PackIcon Pencil}"
+                                                ToolTip="Edit"
+                                                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.EditWheel}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
+                                            <Button Grid.Column="1"
+                                                Margin="5 0 0 0"
+                                                Content="{materialDesign:PackIcon Trash}"
+                                                ToolTip="Delete"
+                                                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.DeleteWheel}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1">
+                <Grid Margin=" 0 10 0 0  ">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox
+                        Margin="10 0 5 0"
+                        ItemsSource="{Binding Wheels}"
+                        SelectedItem="{Binding SelectedWheel1}"
+                        DisplayMemberPath="Id"/>
+                
+                    <Button Grid.Column="1"
+                            Margin="10 0 5 0"
+                            Content="Compare"
+                            Command="{Binding Compare}"/>
+                
+                    <ComboBox Grid.Column="2"
+                              Margin="10 0 5 0"
+                              ItemsSource="{Binding Wheels}"
+                              SelectedItem="{Binding SelectedWheel2}"
+                              DisplayMemberPath="Id"/>
+                
+                    <TextBlock Grid.Column="3"
+                               Margin="10 0 5 0"
+                               Text="{Binding CompareResult}"/>
+                </Grid>
+                
+            </StackPanel>
+            
+            <Border Grid.Row="2" MaxHeight="400"
+                    BorderThickness="1"
+                    BorderBrush="Black"
+                    materialDesign:ScrollBarAssist.ButtonsVisibility="Visible">
+                <ItemsControl
+                    ItemsSource="{Binding Wheels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.Resources>
+                        <DataTemplate DataType="{x:Type wheels:CircleWheelVM}">
+                            <circleWheel:CircleWheelControl
+                                Visibility="{Binding IsPrintable, Converter={x:Static converters:BooleanToVisibilityConverter.Instance}}"
+                                Margin="10"
+                                Diameter="{Binding Diameter}"
+                                SpokeList="{Binding SpokeList}"
+                                SmallDiameter="{Binding SmallDiameter}"/>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type wheels:SquareWheelVM}">
+                            <squareWheel:SquareWheelControl
+                                Visibility="{Binding IsPrintable, Converter={x:Static converters:BooleanToVisibilityConverter.Instance}}"
+                                Margin="10"
+                                Angle="{Binding Angle}"
+                                Diameter="{Binding Diameter}"
+                                SpokeList="{Binding SpokeList}"
+                                SmallDiameter="{Binding SmallDiameter}"
+                                SquareHeight="{Binding SquareHeight}"/>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type wheels:OctahedronWheelVM}">
+                            <octahedronWheel:OctahedronWheelControl
+                                Visibility="{Binding IsPrintable, Converter={x:Static converters:BooleanToVisibilityConverter.Instance}}"
+                                Margin="10"
+                                Angle="{Binding Angle}"
+                                Diameter="{Binding Diameter}"
+                                SpokeList="{Binding SpokeList}"
+                                PolygonPoints="{Binding PolygonPoints}"/>
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                </ItemsControl>
+            </Border>
+            
+            
+            <StackPanel Grid.Row="3">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    
+                    <Button Content="Start" Height="40"
+                            Margin="15 0 0 10"
+                            Command="{Binding StartAnimation}"/>
+            
+                    <Button Content="Stop" Height="40"
+                            Margin="15 0 0 10"
+                            Command="{Binding StopAnimation}"/>
+                
+                    <Button Content="Sort" Height="40"
+                            Margin="15 0 0 10"
+                            Command="{Binding SortByArea}"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </materialDesign:DialogHost>
+</Window>

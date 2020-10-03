@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="ragoz_oop_2.Components.CircleWheel.CircleWheelControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:components="clr-namespace:ragoz_oop_2.Components"
+             xmlns:circleWheel="clr-namespace:ragoz_oop_2.Components.CircleWheel"
+             mc:Ignorable="d"
+             d:DesignHeight="100" d:DesignWidth="100" d:DataContext="{d:DesignInstance circleWheel:CircleWheelControl}">
+    <Grid Height="{Binding Diameter}"
+          Width="{Binding Diameter}">
+        <Ellipse
+            Width="{Binding Diameter}"
+            Height="{Binding Diameter}"
+            StrokeThickness="2"
+            Stroke="Black"/>
+        
+        <Ellipse
+            HorizontalAlignment="Stretch"
+            Width="{Binding SmallDiameter}"
+            Height="{Binding SmallDiameter}"
+            StrokeThickness="2"
+            Stroke="Black"/>
+        
+        <ItemsControl ItemsSource="{Binding SpokeList}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="components:Spoke">
+                    <Line 
+                        X1="{Binding X1}"
+                        X2="{Binding X2}"
+                        Y1="{Binding Y1}"
+                        Y2="{Binding Y2}"
+                        StrokeThickness="2"
+                        Stroke="Black"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>

@@ -1,0 +1,115 @@
+﻿<UserControl x:Class="ragoz_oop_2.Components.WheelModal.WheelModal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:viewModels="clr-namespace:ragoz_oop_2.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.DataContext>
+        <viewModels:WheelModalVM/>
+    </UserControl.DataContext>
+    <Grid Margin="16" MinHeight="260" MinWidth="360">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Margin="5">
+            <DockPanel>
+                <Button
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    ToolTip="MaterialDesignIconButton"
+                    Margin="-10 -10 0 0"
+                    DockPanel.Dock="Right"
+                    IsCancel="True"
+                    Command="{x:Static md:DialogHost.CloseDialogCommand}">
+                    <Button.CommandParameter>
+                        <system:Boolean>False</system:Boolean>
+                    </Button.CommandParameter>
+                    <md:PackIcon Kind="Close" />
+                </Button>
+                <TextBlock 
+                    Text="Wheel"
+                    TextAlignment="Center"
+                    VerticalAlignment="Center"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+            </DockPanel>
+            
+            <Separator/>
+            
+            <StackPanel>
+                <ComboBox
+                    md:HintAssist.Hint="Тип колеса"
+                    ItemsSource="{Binding WheelTypes}"
+                    SelectedItem="{Binding WheelType}"
+                    DisplayMemberPath="Name"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox
+                        Width="150"
+                        md:HintAssist.Hint="Радиус"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding Radius}"/>
+                    
+                    <Button
+                        Margin="10 0 5 0"
+                        Width="50"
+                        Content="*"
+                        Command="{Binding Multiply}"
+                        />
+                    
+                    <Button
+                        Margin="10 0 5 0"
+                        Width="50"
+                        Content="/"
+                        Command="{Binding Divide}"
+                        />
+                    
+                    <TextBox
+                        HorizontalAlignment="Right"
+                        md:HintAssist.Hint="multiplier"
+                        Margin="10 0 5 0"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding RadiusMuliplier}"/>
+                    
+                </StackPanel>
+                
+                <TextBox
+                    md:HintAssist.Hint="Угол поворота"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Text="{Binding Angle}"/>
+                <TextBox
+                    md:HintAssist.Hint="Кол-во спиц"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Text="{Binding SpokeNum}"/>
+            </StackPanel>
+        </StackPanel>
+        
+        <Separator Grid.Row="1"/>
+        
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0 16 0 0">
+            
+            <Button IsDefault="True"
+                    Content="Сохранить"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
+                    Command="{Binding Save}">
+            </Button>
+            
+            <Button IsCancel="True"
+                    Margin="24 0 0 0"
+                    Content="Закрыть"
+                    Style="{DynamicResource MaterialDesignFlatButton}"
+                    Command="{x:Static md:DialogHost.CloseDialogCommand}">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
